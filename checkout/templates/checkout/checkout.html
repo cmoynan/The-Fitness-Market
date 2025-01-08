@@ -1,41 +1,77 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block extra_css %}
+
+{% endblock %}
+
 {% block page_header %}
-<div class="container header-container">
-    <div class="row">
-        <div class="col"></div>
+<div class="overlay"></div>
+    <div class="container-fluid bg-dark text-white py-4">
+        <div class="row justify-content-center">
+            <div class="col text-center">
+                <h1 class="my-3 font-weight-bold">Checkout</h1>
+            </div>
+        </div>
     </div>
-</div>
 {% endblock %}
 
 {% block content %}
-
-<div class="overlay"></div>
-<div class="container mb-2">
-    <div class="row">
-        <div class="col">
-            <hr>
-            <h2 class="logo-font mb-4">Checkout</h2>
-            <hr>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-12 col-lg-6 mb-5">
+                <div class="card shadow-sm rounded-lg">
+                    <div class="card-body">
+                        <h2 class="text-center text-info mb-4">Order Summary ({{ product_count }})</h2>
+                        <div class="row mb-3">
+                            <div class="col-7 offset-2">
+                                <p class="mb-1 small text-muted">Item</p>
+                            </div>
+                        </div>
+                        {% for item in bag_items %}
+                            <div class="row border-bottom py-2">
+                                <div class="col-2 mb-1">
+                                    <a href="{% url 'product_detail' item.product.id %}">
+                                        {% if item.product.image %}
+                                            <img class="w-100 rounded" src="{{ item.product.image.url }}" alt="{{ product.name }}">
+                                        {% else %}
+                                            <img class="w-100 rounded" src="{{ MEDIA_URL }}noimage.png" alt="{{ product.name }}">
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                <div class="col-7">
+                                    <p class="my-0 font-weight-bold">{{ item.product.name }}</p>
+                                    <p class="my-0 small text-muted">Size: {% if item.product.has_sizes %}{{ item.size|upper }}{% else %}N/A{% endif %}</p>
+                                    <p class="my-0 small text-muted">Qty: {{ item.quantity }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <hr class="my-0">
+                        <div class="row text-black text-right mt-3">
+                            <div class="col-7 offset-2">
+                                <p class="my-0">Order Total:</p>
+                                <p class="my-0">Delivery:</p>
+                                <p class="my-0"><strong>Grand Total:</strong></p>
+                            </div>
+                            <div class="col-3">
+                                <p class="my-0">${{ total | floatformat:2 }}</p>
+                                <p class="my-0">${{ delivery | floatformat:2 }}</p>
+                                <p class="my-0"><strong>${{ grand_total | floatformat:2 }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="card shadow-sm rounded-lg">
+                    <div class="card-body">
+                        <h2 class="text-center text-black mb-4">Fill in Your Details</h2>
+                        
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <form id="payment-form" method="POST">
-        {% csrf_token %}
-        <input type="text" name="full_name" placeholder="Full Name" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="text" name="phone_number" placeholder="Phone Number" required>
-        <input type="text" name="address" placeholder="Address" required>
-        <input type="text" name="city" placeholder="City" required>
-        <input type="text" name="postal_code" placeholder="Postal Code" required>
-        <input type="text" name="country" placeholder="Country" required>
-        
-        <!-- Stripe Elements Placeholder -->
-        <div id="card-element"></div>
-        
-        <button id="submit">Pay Now</button>
-    </form>
 
-</body>
-</html>
+{% endblock %}
