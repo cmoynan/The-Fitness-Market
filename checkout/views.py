@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.conf import settings
 from django.views.decorators.http import require_POST
+from .forms import OrderForm
+from .models import Order, OrderLineItem
+from bag.contexts import bag_contents
 import stripe
 
 # Create your views here.
@@ -27,57 +30,156 @@ def cache_checkout_data(request):
         return HttpResponse(content=e, status=400)
 
 def checkout(request):
+    stripe_public_key = settings.STRIPE_PUBLIC_KEY
+    stripe_secret_key = settings.STRIPE_SECRET_KEY
+
     if request.method == 'POST':
-        # Collect order details from POST data
-        full_name = request.POST['full_name']
-        email = request.POST['email']
-        phone_number = request.POST['phone_number']
-        address = request.POST['address']
-        city = request.POST['city']
-        postal_code = request.POST['postal_code']
-        country = request.POST['country']
-
-        # Calculate order total
         bag = request.session.get('bag', {})
-        total = sum(Product.objects.get(id=item_id).price * quantity for item_id, quantity in bag.items())
 
-        # Create an Order object
-        order = Order.objects.create(
-            full_name=full_name,
-            email=email,
-            phone_number=phone_number,
-            address=address,
-            city=city,
-            postal_code=postal_code,
-            country=country,
-            total=total
-        )
+        form_data = {
+            'full_name': request.POST['full_name'],
+            'email': request.POST['email'],
+            'phone_number': request.POST['phone_number'],
+            'country': request.POST['country'],
+            'postcode': request.POST['postcode'],
+            'town_or_city': request.POST['town_or_city'],
+            'street_address1': request.POST['street_address1'],
+            'street_address2': request.POST['street_address2'],
+            'county': request.POST['county'],
+        }
+        order_form = OrderForm(form_data)
 
-        # Create OrderItems and attach to the order
-        for item_id, quantity in bag.items():
-            product = Product.objects.get(id=item_id)
-            OrderItem.objects.create(
-                order=order,
-                product=product,
-                quantity=quantity,
-                item_total=product.price * quantity
+        if order_form.is_valid():
+            order = order_form.save(commit=False)
+            pid = request.POST.get('client_secret').split('_secret')[0]
+            order.stripe_pid = pid
+            order.original_bag = json.dumps(bag)
+
+            # Save the order with the user profile if logged in
+            if request.user.is_authenticated:
+                user_profile = UserProfile.objects.get(user=request.user)
+                order.user = request.user
+
+            order.save()
+
+            # Process order line items
+            for item_id, item_data in bag.items():
+                try:
+                    product = Product.objects.get(id=item_id)
+                    if isinstance(item_data, int):
+                        order_line_item = OrderLineItem(
+                            order=order,
+                            product=product,
+                            quantity=item_data,
+                        )
+                        order_line_item.save()
+                    else:
+                        for size, quantity in item_data['items_by_size'].items():
+                            order_line_item = OrderLineItem(
+                                order=order,
+                                product=product,
+                                quantity=quantity,
+                                product_size=size,
+                            )
+                            order_line_item.save()
+                    order.update_total()
+                except Product.DoesNotExist:
+                    messages.error(
+                        request,
+                        "One of the products in your bag"
+                        "wasn't found in our database. "
+                        "Please call us for assistance!"
+                    )
+                    order.delete()
+                    return redirect(reverse('view_bag'))
+
+            subject = f'Order Confirmation - {order.order_number}'
+            message = (
+                f'Thank you for your order, {order.full_name}!\n\n'
+                f'Here are the details of your order:\n'
+            )
+            for item_id, item_data in bag.items():
+                product = Product.objects.get(id=item_id)
+                if isinstance(item_data, int):
+                    message += f"- {product.name} (Quantity: {item_data})\n"
+                else:
+                    for size, quantity in item_data['items_by_size'].items():
+                        message += f"- {product.name} (Size: {size}, "
+                        message += f"Quantity: {quantity})\n"
+
+            message += f"\nOrder Total: ${order.grand_total:.2f}\n"
+            message += "\nThank you for shopping with us!\n"
+            message += "The GymStitute Team\n"
+
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [order.email],
+                )
+
+            request.session['save_info'] = 'save-info' in request.POST
+            redirect_url = reverse(
+             'checkout_success', args=[order.order_number]
+            )
+            return redirect(redirect_url)
+
+        else:
+            messages.error(
+                request,
+                'There was an error with your form. Please check your info.'
             )
 
-        # Create Stripe PaymentIntent
-        intent = stripe.PaymentIntent.create(
-            amount=int(total * 100),  # Stripe expects cents
-            currency='usd',
-            metadata={'order_id': order.id}
+    else:
+        # Prefill form with user profile address if user is authenticated
+        if request.user.is_authenticated:
+            profile = UserProfile.objects.get(user=request.user)
+            initial_data = {
+                'full_name': profile.user.get_full_name(),
+                'email': profile.user.email,
+                'phone_number': profile.default_phone_number,
+                'country': profile.default_country,
+                'postcode': profile.default_postcode,
+                'town_or_city': profile.default_town_or_city,
+                'street_address1': profile.default_street_address1,
+                'street_address2': profile.default_street_address2,
+                'county': profile.default_county,
+            }
+            order_form = OrderForm(initial=initial_data)
+        else:
+            order_form = OrderForm()
+
+    # Check if bag is empty and prevent checkout if it is
+    bag = request.session.get('bag', {})
+    if not bag:
+        messages.error(request, "There's nothing in your bag at the moment")
+        return redirect(reverse('products'))
+
+    # Set up Stripe payment intent
+    current_bag = bag_contents(request)
+    total = current_bag['grand_total']
+    stripe_total = round(total * 100)
+    stripe.api_key = stripe_secret_key
+    intent = stripe.PaymentIntent.create(
+        amount=stripe_total,
+        currency=settings.STRIPE_CURRENCY,
+    )
+
+    if not stripe_public_key:
+        messages.warning(
+            request,
+            'Stripe public key missing. Did you forget to set your environ?'
         )
 
-        # Pass data to the template
-        return render(request, 'checkout/checkout.html', {
-            'order': order,
-            'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
-            'client_secret': intent.client_secret
-        })
-    
-    return render(request, 'checkout/checkout.html')
+    template = 'checkout/checkout.html'
+    context = {
+        'order_form': order_form,
+        'stripe_public_key': stripe_public_key,
+        'client_secret': intent.client_secret,
+    }
+
+    return render(request, template, context)
+
 
 def checkout_success(request, order_number):
     """
