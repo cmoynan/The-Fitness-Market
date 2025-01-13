@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'subscriptions/css/subscriptions.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="overlay"></div>
+<div class="d-flex justify-content-center align-items-center vh-40 bg-light">
+    <div class="card shadow-lg p-4" style="max-width: 500px; width: 100%;">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-3">Plan Details</h2>
+            <p class="text-center text-muted mb-3">${{ subscription.price }}/month</p>
+            <p class="text-center mb-4">{{ subscription.description }}</p>
+
+            <form id="payment-form" action="{% url 'create_subscription' subscription.id %}" method="POST">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label class="form-label" for="card-element">Credit or debit card</label>
+                    <div id="card-element" class="form-control p-2">
+                        <!-- Card element will be mounted here -->
+                    </div>
+                    <div id="card-errors" role="alert" class="text-danger mt-2"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 fw-semibold py-2"
+                    onmouseover="this.style.backgroundColor='#2563eb';"
+                    onmouseout="this.style.backgroundColor='#3b82f6';"
+                    style="background-color: #3b82f6;">
+                    Subscribe Now
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    var stripe = Stripe('{{ stripe_public_key }}');
+    var elements = stripe.elements();
+
+    var card = elements.create('card');
+
+    card.mount('#card-element');
+
+    card.addEventListener('change', function (event) {
+        var displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+
+    var form = document.getElementById('payment-form');
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        stripe.createToken(card).then(function (result) {
+            if (result.error) {
+                var errorElement = document.getElementById('card-errors');
+                errorElement.textContent = result.error.message;
+            } else {
+                stripeTokenHandler(result.token);
+            }
+        });
+    });
+
+    function stripeTokenHandler(token) {
+        var form = document.getElementById('payment-form');
+        var hiddenInput = document.createElement('input');
+        hiddenInput.setAttribute('type', 'hidden');
+        hiddenInput.setAttribute('name', 'stripeToken');
+        hiddenInput.setAttribute('value', token.id);
+        form.appendChild(hiddenInput);
+
+        form.submit();
+    }
+</script>
+{% endblock %}

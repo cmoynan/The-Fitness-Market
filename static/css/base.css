@@ -4,14 +4,17 @@ html body {
 }
 
 body {
-    background: url('/media/homepage_background_cropped.jpg') no-repeat center center fixed;
+    background: url('/media/homepage_background.jpg') no-repeat center center fixed;
     background-size: cover;
     overflow-y: auto; /* Adds a scroll if content overflows */
     max-height: calc(100vh - [header height] - [footer height]);
     color: #555;
     font-family: 'Lato';
-    margin-top: 9rem;
-    margin-bottom: 3rem;
+    margin-top: 5rem;
+}
+
+.container-fluid {
+    height: 4vh;
 }
 
 

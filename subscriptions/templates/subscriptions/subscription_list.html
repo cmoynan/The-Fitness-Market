@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'subscriptions/css/subscriptions.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="overlay"></div>
+<div class="container py-5">
+    <h1 class="text-center mb-5">Available Subscriptions</h1>
+
+    {% if user_subscriptions %}
+    <div class="mb-5">
+        <h2 class="mb-4">Your Active Subscriptions</h2>
+        <div class="row g-4">
+            {% for subscription in user_subscriptions %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h3 class="card-title">{{ subscription.subscription_type.name }}</h3>
+                        <p class="card-text">Status: <strong>{{ subscription.status }}</strong></p>
+                        {% if subscription.status == 'ACTIVE' %}
+                        <p class="card-text">Next Billing Date: <strong>{{ subscription.next_billing_date|date:"F d, Y" }}</strong></p>
+                        {% elif subscription.status == 'CANCELLED' %}
+                        <p class="card-text">Expiration Date: <strong>{{ subscription.end_date|date:"F d, Y" }}</strong></p>
+                        {% endif %}
+                        <a href="{% url 'manage_subscription' subscription.id %}" 
+                            class="btn btn-primary w-100">
+                            Manage Subscription
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <h2 class="mb-4">Available Plans</h2>
+    <div class="row g-4">
+        {% for subscription in subscriptions %}
+        {% if subscription.id not in user_subscription_type_ids %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <h3 class="card-title">{{ subscription.name }}</h3>
+                    <p class="card-text">£{{ subscription.price }} <span class="text-muted">/ month</span></p>
+                    <p class="card-text">{{ subscription.description }}</p>
+                    <a href="{% url 'subscription_detail' subscription.id %}" 
+                        class="btn btn-success w-100">
+                        Subscribe Now
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

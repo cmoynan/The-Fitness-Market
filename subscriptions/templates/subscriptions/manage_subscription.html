@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'subscriptions/css/subscriptions.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="overlay"></div>
+<div class="container py-5">
+    <h1 class="text-center mb-5">Manage Your Subscription</h1>
+
+    <div class="card shadow-sm border-0 mx-auto" style="max-width: 500px;">
+        <div class="card-body text-center">
+            <h2 class="card-title mb-3">{{ subscription.subscription_type.name }}</h2>
+            <p class="card-text text-muted mb-3">Status: <strong>{{ subscription.status }}</strong></p>
+            <p class="card-text mb-4">£{{ subscription.subscription_type.price }}/month</p>
+
+            {% if subscription.status != 'CANCELLED' %}
+            <form action="{% url 'manage_subscription' subscription.id %}" method="POST" class="d-grid gap-2 mb-4">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="cancel">
+                <button type="submit" class="btn btn-danger"
+                    onclick="return confirm('Are you sure you want to cancel your subscription?')">
+                    Cancel Subscription
+                </button>
+            </form>
+            {% endif %}
+
+            <a href="{% url 'subscription_list' %}" class="btn btn-primary">
+                ← Back to Subscriptions
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
