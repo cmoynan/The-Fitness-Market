@@ -12,6 +12,7 @@
     <div class="card shadow-lg p-4" style="max-width: 500px; width: 100%;">
         <div class="card-body">
             <h2 class="card-title text-center mb-3">Plan Details</h2>
+            <h3 class="card-title text-center">{{ subscription.name }}</h3>
             <p class="text-center text-muted mb-3">${{ subscription.price }}/month</p>
             <p class="text-center mb-4">{{ subscription.description }}</p>
 
@@ -25,12 +26,15 @@
                     <div id="card-errors" role="alert" class="text-danger mt-2"></div>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 fw-semibold py-2"
+                <button type="submit" class="btn btn-primary w-100 fw-semibold py-2 mt-2"
                     onmouseover="this.style.backgroundColor='#2563eb';"
                     onmouseout="this.style.backgroundColor='#3b82f6';"
                     style="background-color: #3b82f6;">
                     Subscribe Now
                 </button>
+                <a href="{% url 'subscription_list' %}" class="btn btn-success w-100 mt-2">
+                    ← Back to Subscriptions
+                </a>
             </form>
         </div>
     </div>

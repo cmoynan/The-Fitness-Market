@@ -10,7 +10,6 @@ body {
     max-height: calc(100vh - [header height] - [footer height]);
     color: #555;
     font-family: 'Lato';
-    margin-top: 5rem;
 }
 
 .container-fluid {

@@ -18,32 +18,33 @@ def subscription_list(request):
     """View to list all available subscriptions"""
     subscriptions = SubscriptionType.objects.filter(is_active=True)
 
+    # Fetch user subscriptions (both active and not yet expired canceled subscriptions)
     user_subscriptions = Subscription.objects.filter(
-        user=request.user, is_active=True
+        user=request.user, 
+        is_active=True
+    ) | Subscription.objects.filter(
+        user=request.user, 
+        status='CANCELLED', 
+        end_date__gte=now()
     )
+
     user_subscription_type_ids = user_subscriptions.values_list(
         'subscription_type_id', flat=True
     )
-
-    # Fetch both active and cancelled subscriptions
-    all_subscriptions = Subscription.objects.filter(user=request.user)
 
     context = {
         'subscriptions': subscriptions,
         'user_subscriptions': user_subscriptions,
         'user_subscription_type_ids': list(user_subscription_type_ids),
-        'all_subscriptions': all_subscriptions,  # Include cancelled subscriptions here
     }
 
-    # next_billing_date or calculate for active subscriptions
+    # Ensure next_billing_date or end_date is calculated for subscriptions
     for subscription in user_subscriptions:
-        if not subscription.next_billing_date:
-            # Calculate the next billing date
+        if subscription.status == 'ACTIVE' and not subscription.next_billing_date:
             subscription.next_billing_date = subscription.start_date + timedelta(days=30)
             subscription.save()
 
     return render(request, 'subscriptions/subscription_list.html', context)
-
 
 
 @login_required

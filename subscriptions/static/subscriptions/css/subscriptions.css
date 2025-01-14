@@ -1,0 +1,20 @@
+body {
+    margin-top: 10rem !important;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Full-page overlay (used for loading or other purposes) */
+.overlay {
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	position: fixed;
+	background: white;
+	z-index: -1;
+}
+
+
+
+
+
