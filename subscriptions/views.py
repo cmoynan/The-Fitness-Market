@@ -93,7 +93,7 @@ def create_subscription(request, subscription_id):
                 f"Thank you for subscribing to {subscription_type.name}. Your subscription has been successfully created.\n\n"
                 f"Subscription Type: {subscription_type.name}\n"
                 f"Subscription ID: {subscription.stripe_subscription_id}\n\n"
-                "Thank you for choosing GymStitute as your go to Gym Buddy!"
+                "Thank you for choosing The Fitness Market"
             )
             send_mail(
                 subject,

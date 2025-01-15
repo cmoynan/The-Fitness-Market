@@ -114,7 +114,7 @@ def checkout(request):
 
             message += f"\nOrder Total: ${order.grand_total:.2f}\n"
             message += "\nThank you for shopping with us!\n"
-            message += "The GymStitute Team\n"
+            message += "The Fitness Market Team\n"
 
             send_mail(
                 subject,
