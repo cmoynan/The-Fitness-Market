@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'about/css/about.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="overlay"></div>
+<div class="container mt-10">
+    <h2 class="mb-4 text-center">About Us</h2>
+
+    <!-- About Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="text-center">Welcome to The Fitness Market</h5>
+        </div>
+        <div class="card-body">
+            <p>
+                Welcome to The Fitness Market, your one-stop destination for all things fitness! Founded in 2024, we are
+                committed to empowering your wellness journey by offering a carefully curated selection of high-quality
+                fitness clothing, cutting-edge equipment, and innovative fitness electronics. Whether you’re looking to
+                upgrade your gear, stay stylish while working out, or track your progress with the latest tech, we’ve
+                got you covered.
+
+                In addition to our premium products, we offer flexible subscription plans for tailored meal plans and
+                workout routines designed to meet your unique fitness goals. At The Fitness Market, we believe in making
+                fitness accessible, effective, and enjoyable for everyone. Explore our range today and take the next
+                step toward a healthier, happier you!
+            </p>
+        </div>
+    </div>
+
+    <!-- Newsletter Sign Up Section -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="text-center">Sign up for Our Newsletter</h5>
+        </div>
+        <div class="card-body">
+            <p>Stay up to date with the latest news, promotions, and fitness tips by signing up for our newsletter.</p>
+            <form action="{% url 'about' %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="email">Enter your email address:</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Subscribe</button>
+            </form>
+        </div>
+    </div>
+
+
+{% endblock %}

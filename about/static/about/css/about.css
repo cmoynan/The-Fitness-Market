@@ -1,0 +1,16 @@
+.container {
+    margin-top: 125px;
+}
+
+.card-header {
+    background-color: #0378ed;
+    color: white;
+}
+
+.card-body {
+    background-color: #f8f9fa;
+}
+
+h2 {
+    color: #343a40;
+}
