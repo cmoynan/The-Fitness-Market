@@ -12,6 +12,10 @@ body {
     font-family: 'Lato';
 }
 
+.container {
+    margin-top: 50px;
+}
+
 .container-fluid {
     height: 4vh;
 }
