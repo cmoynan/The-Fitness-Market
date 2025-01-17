@@ -40,12 +40,17 @@
     </div>
 </div>
 
+<div class="loading-overlay d-none" id="loading-overlay">
+    <div class="loading-spinner">
+        <i class="fas fa-spinner fa-spin"></i> Processing Payment...
+    </div>
+</div>
+
 <script>
     var stripe = Stripe('{{ stripe_public_key }}');
     var elements = stripe.elements();
 
     var card = elements.create('card');
-
     card.mount('#card-element');
 
     card.addEventListener('change', function (event) {
@@ -61,8 +66,14 @@
     form.addEventListener('submit', function (event) {
         event.preventDefault();
 
+        // Show the loading overlay when the user submits the form
+        var loadingOverlay = document.getElementById('loading-overlay');
+        loadingOverlay.classList.remove('d-none');
+
         stripe.createToken(card).then(function (result) {
             if (result.error) {
+                // Hide the loading overlay if there's an error
+                loadingOverlay.classList.add('d-none');
                 var errorElement = document.getElementById('card-errors');
                 errorElement.textContent = result.error.message;
             } else {
@@ -79,7 +90,9 @@
         hiddenInput.setAttribute('value', token.id);
         form.appendChild(hiddenInput);
 
+        // Submit the form
         form.submit();
     }
 </script>
+
 {% endblock %}

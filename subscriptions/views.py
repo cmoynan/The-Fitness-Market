@@ -143,7 +143,7 @@ def manage_subscription(request, subscription_id):
                     f"Your subscription to {subscription.subscription_type.name} has been successfully cancelled.\n\n"
                     f"Subscription ID: {subscription.stripe_subscription_id}\n"
                     f"Your subscription will remain active until {subscription.end_date.strftime('%B %d, %Y')}.\n\n"
-                    "Thank you for using our service!"
+                    "Thank you for choosing he Fitness Market!"
                 )
                 send_mail(
                     subject,
