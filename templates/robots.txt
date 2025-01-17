@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /accounts/
+Disallow: /checkout/
+Allow: /
+Sitemap: https://8000-cmoynan-thefitnessmarke-ktq57v56at4.ws.codeinstitute-ide.net/sitemap.xml

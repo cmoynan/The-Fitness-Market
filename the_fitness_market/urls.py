@@ -40,5 +40,9 @@ urlpatterns = [
     path('profile/', include('profiles.urls')),
     path('subscriptions/', include('subscriptions.urls')),
     path('about/', include('about.urls')),
+    path('robots.txt', TemplateView.as_view(
+        template_name='robots.txt',
+        content_type='text/plain'
+    )),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
