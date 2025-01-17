@@ -57,7 +57,8 @@ INSTALLED_APPS = [
 
     #other
     'crispy_forms',
-    'crispy_bootstrap5'
+    'crispy_bootstrap5',
+    'django.contrib.sitemaps',
 ]
 
 MIDDLEWARE = [

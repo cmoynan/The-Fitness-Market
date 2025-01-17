@@ -18,6 +18,15 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import handler404
+from django.views.generic import TemplateView
+from django.contrib.sitemaps.views import sitemap
+from .sitemaps import StaticViewSitemap, ProductSitemap, ProfileSitemap
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'products': ProductSitemap,
+    'profiles': ProfileSitemap,
+}
 
 handler404 = 'home.views.custom_404_view'
 
@@ -31,4 +40,5 @@ urlpatterns = [
     path('profile/', include('profiles.urls')),
     path('subscriptions/', include('subscriptions.urls')),
     path('about/', include('about.urls')),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
