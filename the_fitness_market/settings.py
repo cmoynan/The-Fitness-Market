@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 import os
+import dj_database_url
 
 from pathlib import Path
 
@@ -27,7 +28,7 @@ SECRET_KEY = 'django-insecure-2ns(z3ec%88)mom_i5zn_silb^g5^3!bb-m*5!$6dx$y+cu!*8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['8000-cmoynan-thefitnessmarke-ktq57v56at4.ws.codeinstitute-ide.net']
+ALLOWED_HOSTS = ['8000-cmoynan-thefitnessmarke-ktq57v56at4.ws.codeinstitute-ide.net', 'https://the-fitness-market-bc7e1c0d1319.herokuapp.com/', 'localhost']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://8000-cmoynan-thefitnessmarke-ktq57v56at4.ws.codeinstitute-ide.net'
@@ -123,12 +124,17 @@ WSGI_APPLICATION = 'the_fitness_market.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if 'DATABASE_URL' in os.environ:
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 
 # Password validation
