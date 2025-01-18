@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['8000-cmoynan-thefitnessmarke-ktq57v56at4.ws.codeinstitute-ide.net', 'the-fitness-market-bc7e1c0d1319.herokuapp.com/', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['8000-cmoynan-thefitnessmarke-ktq57v56at4.ws.codeinstitute-ide.net', 'the-fitness-market-bc7e1c0d1319.herokuapp.com', 'localhost', '127.0.0.1']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://8000-cmoynan-thefitnessmarke-ktq57v56at4.ws.codeinstitute-ide.net', 'https://the-fitness-market-bc7e1c0d1319.herokuapp.com/'
