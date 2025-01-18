@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-2ns(z3ec%88)mom_i5zn_silb^g5^3!bb-m*5!$6dx$y+cu!*8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['8000-cmoynan-thefitnessmarke-ktq57v56at4.ws.codeinstitute-ide.net', 'the-fitness-market-bc7e1c0d1319.herokuapp.com/', 'localhost']
 
