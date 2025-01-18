@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['8000-cmoynan-thefitnessmarke-ktq57v56at4.ws.codeinstitute-ide.net', 'the-fitness-market-bc7e1c0d1319.herokuapp.com', 'localhost', '127.0.0.1']
 

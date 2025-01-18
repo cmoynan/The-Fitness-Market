@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
-{% load media %}
+{% load static %}
 
 {% block content %}
 <div class="container-fluid text-center mt-5">
     <div class="card p-5 shadow-lg">
-        <h1 class="display-4 text-danger mb-4 mt-5">Looks like you’ve wandered off the fitness trail. Let’s get you back on track!</h1>
-        <img src="{{ MEDIA_URL }}error404.jpg" alt="Error 404" class="img-fluid rounded mb-4" style="max-width: 300px; height: auto;">
-        
-        
+        <h1 class="display-4 text-danger mb-4 mt-5">Looks like you’ve wandered off the fitness trail. Let’s get you back
+            on track!</h1>
+        <img src="{% static 'images/error404.jpg' %}" alt="Error 404" class="img-fluid rounded mb-4"
+            style="max-width: 300px; height: auto;">
+
+
         <div class="mt-4">
             <a href="{% url 'home' %}" class="btn btn-primary rounded-pill px-4 py-2 me-2">Go Home</a>
         </div>
