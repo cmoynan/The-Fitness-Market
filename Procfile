@@ -1,1 +1,1 @@
-web: gunicorn the_fitness_market.wsgi.application
+web: gunicorn the_fitness_market.wsgi:application
