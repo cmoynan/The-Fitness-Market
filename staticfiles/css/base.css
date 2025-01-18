@@ -1,0 +1,228 @@
+/* Full height for HTML */
+html body {
+    min-height: 100%;
+}
+
+body {
+    background: url('/media/homepage_background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    overflow-y: auto; /* Adds a scroll if content overflows */
+    max-height: calc(100vh - [header height] - [footer height]);
+    color: #555;
+    font-family: 'Lato';
+}
+
+.container {
+    margin-top: 50px;
+}
+
+.container-fluid {
+    height: 4vh;
+}
+
+
+/* from Bulma */
+.icon {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+.logo-font {
+    text-transform: uppercase;
+}
+
+/* Main logo link styling */
+.main-logo-link {
+    width: fit-content;
+}
+
+/* Shop now button with custom styling */
+.shop-now-button {
+    background: transparent;
+    color: white;
+    min-width: 260px;
+    border-radius: 30px;
+    padding: 10px 20px;
+    border: 2px solid rgb(0, 0, 139);
+    text-align: center;
+}
+
+.btn-black {
+    background: black;
+    color: white;
+}
+
+btn-outline-black {
+    background: white;
+    color: black !important;
+    border: 1px solid black;
+}
+
+.btn-outline-black:hover,
+.btn-outline-black:active,
+.btn-outline-black:focus {
+    background: black;
+    color: white !important;
+}
+
+.shop-now-button:hover,
+.shop-now-button:active,
+.shop-now-button:focus,
+.btn-black:hover,
+.btn-black:active,
+.btn-black:focus {
+    background: rgb(0, 0, 139);
+    color: white;
+}
+
+/* Text and border color helpers */
+.text-black {
+    color: #000 !important;
+}
+
+.border-black {
+    border: 1px solid black !important;
+}
+
+.bg-black {
+    background: #000 !important;
+}
+
+/* Full-page overlay (used for loading or other purposes) */
+.overlay {
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	position: fixed;
+	background: white;
+	z-index: -1;
+}
+
+/* Message container styling */
+.message-container {
+    position: fixed;
+    top: 72px;
+    right: 15px;
+    z-index: 99999999999;
+}
+
+.custom-toast {
+    overflow: visible;
+}
+
+/* Alert box styling */
+.alert {
+    margin: 15px;
+    padding: 15px;
+    min-width: 200px;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    padding-right: 35px;  /* Make room for close button */
+}
+
+/* Close button styling */
+.btn-close {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: inherit;
+    opacity: .5;
+    padding: 0;
+    cursor: pointer;
+}
+
+.btn-close:hover {
+    opacity: .75;
+}
+
+.btn-close span {
+    position: relative;
+    top: -2px;
+}
+
+/* Alert types (success, danger, warning, info) */
+.alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    color: #856404;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+
+/* -------------------------------- Media Queries */
+
+/* Slightly larger container on xl screens */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 80%;
+  }
+}
+
+/* fixed top navbar only on medium and up */
+@media (min-width: 992px) {
+    .fixed-top-desktop-only {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 1030;
+    }
+
+    .header-container {
+        padding-top: 164px;
+    }
+
+}
+
+/* pad the top a bit when navbar is collapsed on mobile */
+@media (max-width: 991px) {
+    .header-container {
+        padding-top: 116px;
+    }
+
+    body {
+        height: calc(100vh - 116px);
+        font-size: small;
+    }
+
+    .message-container {
+            top: 60px;
+            right: 10px;
+            left: 10px;
+        }
+        
+    .alert {
+            margin: 10px;
+            padding: 10px;
+        }
+
+
+}
