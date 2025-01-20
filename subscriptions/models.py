@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from decimal import Decimal
+from django.utils.timezone import now
+from datetime import timedelta
+
 
 # Create your models here.
 
@@ -55,7 +58,7 @@ class Subscription(models.Model):
         max_length=100, blank=True, null=True
     )
     next_billing_date = models.DateTimeField(null=True, blank=True)
-     # Track cancellation date
+         # Track cancellation date
     cancel_date = models.DateTimeField(null=True, blank=True)
 
     STATUS_CHOICES = [
