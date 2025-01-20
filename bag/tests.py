@@ -66,7 +66,6 @@ class BagViewsTest(TestCase):
             for message in messages
         ))
 
-
     def test_remove_from_bag(self):
         """Test removing a product from the shopping bag."""
         # Add item to the bag first

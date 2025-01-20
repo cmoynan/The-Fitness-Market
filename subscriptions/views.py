@@ -18,13 +18,13 @@ def subscription_list(request):
     """View to list all available subscriptions"""
     subscriptions = SubscriptionType.objects.filter(is_active=True)
 
-    # Fetch user subscriptions (both active and not yet expired canceled subscriptions)
+    # Fetch user subscriptions
     user_subscriptions = Subscription.objects.filter(
-        user=request.user, 
+        user=request.user,
         is_active=True
     ) | Subscription.objects.filter(
-        user=request.user, 
-        status='CANCELLED', 
+        user=request.user,
+        status='CANCELLED',
         end_date__gte=now()
     )
 
@@ -40,8 +40,12 @@ def subscription_list(request):
 
     # Ensure next_billing_date or end_date is calculated for subscriptions
     for subscription in user_subscriptions:
-        if subscription.status == 'ACTIVE' and not subscription.next_billing_date:
-            subscription.next_billing_date = subscription.start_date + timedelta(days=30)
+        if (subscription.status == 'ACTIVE' and
+           not subscription.next_billing_date):
+            subscription.next_billing_date = (
+             subscription.start_date + timedelta(days=30)
+            )
+
             subscription.save()
 
     return render(request, 'subscriptions/subscription_list.html', context)
@@ -90,7 +94,8 @@ def create_subscription(request, subscription_id):
             subject = f"Subscription Confirmation: {subscription_type.name}"
             message = (
                 f"Hello {request.user.first_name},\n\n"
-                f"Thank you for subscribing to {subscription_type.name}. Your subscription has been successfully created.\n\n"
+                f"Thank you for subscribing to {subscription_type.name}. "
+                "Your subscription has been successfully created.\n\n"
                 f"Subscription Type: {subscription_type.name}\n"
                 f"Subscription ID: {subscription.stripe_subscription_id}\n\n"
                 "Thank you for choosing The Fitness Market"
@@ -103,7 +108,8 @@ def create_subscription(request, subscription_id):
             )
 
             messages.success(
-                request, f'Successfully subscribed to {subscription_type.name}!'
+                request,
+                f'Successfully subscribed to {subscription_type.name}!'
             )
             return redirect('subscription_list')
 
@@ -137,13 +143,19 @@ def manage_subscription(request, subscription_id):
                 subscription.save()
 
                 # Send confirmation email
-                subject = f"Subscription Cancelled: {subscription.subscription_type.name}"
+                subject = (
+                   f"Subscription Cancelled: "
+                   f"{subscription.subscription_type.name}"
+                )
                 message = (
                     f"Hello {request.user.first_name},\n\n"
-                    f"Your subscription to {subscription.subscription_type.name} has been successfully cancelled.\n\n"
+                    f"Your subscription to"
+                    f"{subscription.subscription_type.name} "
+                    "has been successfully cancelled.\n\n"
                     f"Subscription ID: {subscription.stripe_subscription_id}\n"
-                    f"Your subscription will remain active until {subscription.end_date.strftime('%B %d, %Y')}.\n\n"
-                    "Thank you for choosing he Fitness Market!"
+                    f"Your subscription will remain active until "
+                    f"{subscription.end_date.strftime('%B %d, %Y')}.\n\n"
+                    "Thank you for choosing The Fitness Market!"
                 )
                 send_mail(
                     subject,
@@ -152,7 +164,11 @@ def manage_subscription(request, subscription_id):
                     [request.user.email],
                 )
 
-                messages.success(request, f'Subscription cancelled. It will remain active until {subscription.end_date.strftime("%B %d, %Y")}.')
+                messages.success(
+                    request, f"Subscription cancelled."
+                    f"It will remain active until "
+                    f'{subscription.end_date.strftime("%B %d, %Y")}.'
+                )
             except Exception as e:
                 messages.error(request, f"An error occurred: {str(e)}")
 

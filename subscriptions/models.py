@@ -55,7 +55,8 @@ class Subscription(models.Model):
         max_length=100, blank=True, null=True
     )
     next_billing_date = models.DateTimeField(null=True, blank=True)
-    cancel_date = models.DateTimeField(null=True, blank=True)  # Track cancellation date
+     # Track cancellation date
+    cancel_date = models.DateTimeField(null=True, blank=True)
 
     STATUS_CHOICES = [
         ('ACTIVE', 'Active'),
@@ -78,7 +79,6 @@ class Subscription(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.subscription_type.name}"
-
 
 
 class SubscriptionBenefit(models.Model):
