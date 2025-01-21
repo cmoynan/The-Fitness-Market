@@ -213,6 +213,10 @@ btn-outline-black {
         font-size: xx-small;
     }
 
+    .display-4.logo-font.text-black {
+        font-size: .5rem;
+    }
+
     .logo-font {
         display: none;
     }
