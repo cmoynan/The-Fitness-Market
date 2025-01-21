@@ -1,10 +1,5 @@
 ![image](https://github.com/user-attachments/assets/6ac4b912-f25f-4c67-8757-213433f5e67c)
 
-###SuperUser Access
-
-Username : gitpod
-Password; Kildare89
-
 # The Fitness Market
 
 The Fitness Market is your one-stop online platform for all things fitness. Whether you're a beginner or a fitness enthusiast, The Fitness Market provides a streamlined experience to access a wide range of gym essentials in one convenient place. From high-quality clothing and gear to electronics and personalized, subscription-based meal and workout plans, The Fitness Market has everything you need to support your fitness journey.
