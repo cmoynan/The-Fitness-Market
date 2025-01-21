@@ -1,5 +1,9 @@
 ![image](https://github.com/user-attachments/assets/6ac4b912-f25f-4c67-8757-213433f5e67c)
 
+###SuperUser Access
+
+Username : gitpod
+Password; Kildare89
 
 # The Fitness Market
 
@@ -640,6 +644,194 @@ By leveraging Facebook, The Fitness Market can reach a wider audience and keep u
 PostgreSQL Database
 The Fitness Market uses a PostgreSQL database to store essential data, such as user information, product details, order history, and subscription information. PostgreSQL was chosen for its robustness, scalability, and compatibility with Django, providing a reliable relational database that supports the platform's core functionalities. This setup ensures efficient data storage and retrieval, allowing for seamless interactions across the website.
 
+### Database Schema
+
+![image](https://github.com/user-attachments/assets/c4092975-0a9a-4f7c-aae1-9682e0ea1531)
+
+### User (AuthUser)
+
+Handles all user authentication and basic information.
+- **Key Fields**:
+  - `username` (unique)
+  - `email`
+  - `password` (hashed)
+  - `is_active` (flag)
+  - `is_staff` (flag)
+  - `is_superuser` (flag)
+
+This is the core table that connects to most other functionalities.
+
+---
+
+### User Profile (ProfilesUserProfile)
+
+Extends user information with shipping/billing details.
+- **One-to-one relationship** with `AuthUser`
+- **Stores default address information**:
+  - `phone_number`
+  - `shipping_address` details
+  - `country_information`
+
+---
+
+## Product Management
+
+### Categories (ProductsCategory)
+
+Organizes products into groups.
+- **Fields**:
+  - `name`
+  - `friendly_name` (display name)
+
+---
+
+### Products (ProductsProduct)
+
+Stores all product information.
+- **Key Fields**:
+  - `SKU` (unique identifier)
+  - `name`
+  - `description`
+  - `price` (decimal)
+  - `rating`
+  - `image_url`
+  - `has_sizes` (flag)
+
+**Links** to `ProductsCategory` via foreign key.
+
+---
+
+## Order Management
+
+### Orders (CheckoutOrder)
+
+Captures customer orders.
+- **Important Fields**:
+  - `order_number` (unique)
+  - `user` (optional - allows guest checkout)
+  - `full_name`
+  - `email`
+  - `delivery_address` details
+  - **Financial details**:
+    - `order_total`
+    - `delivery_cost`
+    - `grand_total`
+  - `stripe_pid` (payment identifier)
+
+---
+
+### Order Line Items (CheckoutOrderlineitem)
+
+Tracks individual items within an order.
+- **Links**: Products to Orders
+- **Tracks**:
+  - `quantity`
+  - `size` (if applicable)
+  - `line_item_total`
+  
+**References** both `CheckoutOrder` and `ProductsProduct`.
+
+---
+
+## Subscription System
+
+### Subscription Types (SubscriptionsSubscriptiontype)
+
+Defines available subscription plans.
+- **Fields**:
+  - `name`
+  - `description`
+  - `price`
+  - `features` (JSON field)
+  - `stripe_price_id`
+  - `subscription_type`
+  - `is_active` (flag)
+
+---
+
+### Subscriptions (SubscriptionsSubscription)
+
+Tracks active user subscriptions.
+- **Key Fields**:
+  - `user` reference
+  - `subscription_type` reference
+  - `start_date`
+  - `end_date`
+  - `status`
+  - `stripe_subscription_id`
+  - `is_active` (flag)
+  - `next_billing_date`
+
+---
+
+### Subscription Benefits (SubscriptionsSubscriptionbenefit)
+
+Records benefits used by subscribers.
+- **Tracks**:
+  - `benefit_name`
+  - `date_used`
+  - `value`
+  - `subscription_id` reference
+
+---
+
+## Key Relationships
+
+### Users & Orders
+
+- Users can have multiple orders.
+- Orders can be linked to users or be guest orders.
+
+### Products & Orders
+
+- Products connect to orders through **order line items**.
+- Products belong to categories.
+
+### Users & Subscriptions
+
+- Users can have multiple subscriptions.
+- Subscriptions track benefits usage.
+
+---
+
+## Database Features
+
+### Guest Checkout Support
+
+- Optional `user` foreign key in orders.
+- Complete customer information stored with each order.
+
+### Flexible Product System
+
+- Support for sized and non-sized products.
+- Category organization.
+- Image and URL management.
+
+### Comprehensive Order Tracking
+
+- Complete delivery information.
+- Payment processing integration.
+- Line item tracking.
+
+### Subscription Management
+
+- Multiple subscription types.
+- Benefit tracking.
+- Stripe integration for payments.
+
+---
+
+## Conclusion
+
+This schema supports a full-featured e-commerce platform with subscription capabilities, allowing for:
+- Guest and user purchases.
+- Product categorization.
+- Detailed order tracking.
+- Subscription management.
+- User profiles with saved information.
+
+
+
 
 ### AWS Cloud Services for Static and Media Files
 
@@ -741,7 +933,7 @@ Essential configuration variables were added to the Heroku app’s settings to s
 
 AWS S3 credentials for static and media file storage, including AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_STORAGE_BUCKET_NAME.
 Stripe API keys for secure payment processing, including STRIPE_PUBLIC_KEY, STRIPE_SECRET_KEY, and STRIPE_WH_SECRET (webhook secret).
-DATABASE_URL for PostgreSQL database access, allowing Gymstitute to store and retrieve data reliably.
+DATABASE_URL for PostgreSQL database access, allowing The Fitness Market to store and retrieve data reliably.
 SECRET_KEY for Django application security, ensuring encrypted sessions and secure data handling.
 
 ### Database Setup: 
