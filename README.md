@@ -462,7 +462,7 @@ The website is built with user experience in mind. Key features, such as adding 
 
 Persistent Navigation: The website features a fixed navigation bar at the top of the page that remains visible as users scroll. This ensures that essential options (like the shopping bag, account login, and navigation links) are always within easy reach.
 
-![image](https://github.com/user-attachments/assets/b69caf25-e4c0-464c-b641-7f0d3bfc1c8f)
+![image](https://github.com/user-attachments/assets/d18c66ef-620f-4bc3-8ad6-5be23d84aea3)
 
 ### Quick Access: 
 Users can quickly navigate between product categories, subscriptions, and their account dashboard without having to scroll back to the top of the page, providing a seamless browsing experience.
