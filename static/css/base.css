@@ -210,7 +210,11 @@ btn-outline-black {
 
     body {
         height: calc(100vh - 116px);
-        font-size: small;
+        font-size: xx-small;
+    }
+
+    .logo-font {
+        display: none;
     }
 
     .message-container {
